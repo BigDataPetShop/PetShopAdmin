@@ -1,0 +1,29 @@
+{
+  "name": "petshopadmin",
+  "version": "1.0.0",
+  "description": "Pet Shop administration application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BigDataPetShop/PetShopAdmin.git"
+  },
+  "keywords": [
+    "pet",
+    "shop",
+    "big",
+    "data",
+    "admin"
+  ],
+  "author": "Filipe Borba & Eduardo Tirta",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BigDataPetShop/PetShopAdmin/issues"
+  },
+  "homepage": "https://github.com/BigDataPetShop/PetShopAdmin#readme",
+  "dependencies": {
+    "@material-ui/core": "^3.0.3"
+  }
+}
