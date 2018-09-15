@@ -1,9 +1,8 @@
 import React from "react";
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+import TextField from "@material-ui/core/TextField";
+
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
@@ -36,94 +35,139 @@ const styles = {
   }
 };
 
-function UserProfile(props) {
-  const { classes } = props;
-  return (
-    <div>
-      <GridContainer>
-        <GridItem xs={12} sm={12} md={12}>
-          <Card>
-            <CardHeader color="primary">
-              <h4 className={classes.cardTitleWhite}>Cadastro</h4>
-              <p className={classes.cardCategoryWhite}>Cadastre um animal</p>
-            </CardHeader>
-            <CardBody>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={4}>
-                  <RadioGroup>
-                    <FormControlLabel
-                      value="animal"
-                      control={<Radio />}
-                      label="Animal"
-                    />
-                    <FormControlLabel
-                      value="dono"
-                      control={<Radio />}
-                      label="Dono"
-                    />
-                  </RadioGroup>
-                </GridItem>
-              </GridContainer>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={3}>
-                  <CustomInput
-                    labelText="Usuário"
-                    id="username"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="Email"
-                    id="email"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-              </GridContainer>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={6}>
-                  <CustomInput
-                    labelText="Primeiro Nome"
-                    id="first-name"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={6}>
-                  <CustomInput
-                    labelText="Sobrenome"
-                    id="last-name"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-              </GridContainer>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="Cidade"
-                    id="city"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-              </GridContainer>
-            </CardBody>
-            <CardFooter>
-              <Button color="primary">Cadastrar</Button>
-            </CardFooter>
-          </Card>
-        </GridItem>
-      </GridContainer>
-    </div>
-  );
+class UserProfile extends React.Component {
+  state = {
+    nome: "",
+    sexo: "",
+    tipo: "",
+    raca: "",
+    dataNascimento: "2018-09-19"
+  };
+
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value
+    });
+  };
+
+  submit = () => {
+    console.log(this.state);
+  };
+
+  render() {
+    const { classes } = this.props;
+
+    const styles = theme => ({
+      container: {
+        display: "flex",
+        flexWrap: "wrap"
+      },
+      textField: {
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit,
+        width: 200
+      },
+      menu: {
+        width: 200
+      }
+    });
+
+    return (
+      <div>
+        <div>
+          <GridContainer>
+            <GridItem xs={12} sm={12} md={12}>
+              <Card>
+                <CardHeader color="primary">
+                  <h4 className={classes.cardTitleWhite}>Animal</h4>
+                  <p className={classes.cardCategoryWhite}>
+                    Cadastre um novo animal
+                  </p>
+                </CardHeader>
+                <CardBody>
+                  <form
+                    className={classes.container}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <GridContainer>
+                      <GridItem xs={12} sm={12} md={6}>
+                        <TextField
+                          id="name"
+                          label="Nome"
+                          className={classes.textField}
+                          value={this.state.name}
+                          onChange={this.handleChange("nome")}
+                          margin="normal"
+                          fullWidth
+                        />
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={6}>
+                        <TextField
+                          id="sexo"
+                          label="Sexo"
+                          className={classes.textField}
+                          value={this.state.sexo}
+                          onChange={this.handleChange("sexo")}
+                          margin="normal"
+                          fullWidth
+                        />
+                      </GridItem>
+                    </GridContainer>
+                    <GridContainer>
+                      <GridItem xs={12} sm={12} md={6}>
+                        <TextField
+                          id="tipo"
+                          label="Tipo"
+                          className={classes.textField}
+                          value={this.state.tipo}
+                          onChange={this.handleChange("tipo")}
+                          margin="normal"
+                          fullWidth
+                        />
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={6}>
+                        <TextField
+                          id="raca"
+                          label="Raça"
+                          className={classes.textField}
+                          value={this.state.raca}
+                          onChange={this.handleChange("raca")}
+                          margin="normal"
+                          fullWidth
+                        />
+                      </GridItem>
+                    </GridContainer>
+                    <GridContainer>
+                      <GridItem xs={12} sm={12} md={12}>
+                        <TextField
+                          id="dataNascimento"
+                          label="Data de Nascimento"
+                          type="date"
+                          value={this.state.dataNascimento}
+                          onChange={this.handleChange("dataNascimento")}
+                          className={classes.textField}
+                          InputLabelProps={{
+                            shrink: true
+                          }}
+                          fullWidth
+                        />
+                      </GridItem>
+                    </GridContainer>
+                  </form>
+                </CardBody>
+                <CardFooter>
+                  <Button color="primary" onClick={this.submit}>
+                    Cadastrar
+                  </Button>
+                </CardFooter>
+              </Card>
+            </GridItem>
+          </GridContainer>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default withStyles(styles)(UserProfile);

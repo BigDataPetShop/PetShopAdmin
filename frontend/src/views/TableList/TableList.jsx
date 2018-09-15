@@ -46,7 +46,7 @@ function TableList(props) {
       <GridItem xs={12} sm={12} md={12}>
         <Card>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Simple Table</h4>
+            <h4 className={classes.cardTitleWhite}>Animais Cadastrados</h4>
             <p className={classes.cardCategoryWhite}>
               Here is a subtitle for this table
             </p>
@@ -71,7 +71,7 @@ function TableList(props) {
         <Card plain>
           <CardHeader plain color="primary">
             <h4 className={classes.cardTitleWhite}>
-              Table on Plain Background
+              Produtos Cadastrados
             </h4>
             <p className={classes.cardCategoryWhite}>
               Here is a subtitle for this table
