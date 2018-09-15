@@ -27,7 +27,7 @@ router.post('/animal/servico', function(req, res, next) {
 
 router.put('/animal/servico', function(req, res, next) {
   var put = req.body;
-  connection.query('UPDATE TABLE petshop_servico SET Preco=? where idPetshop=(Select idPetshop from petshop where Nome="?") and idServico=(Select idServico from servico where Nome="?")', post.Preco,post.nomePetshop,post.nomeServico, function (err, results, fields) {
+  connection.query('UPDATE TABLE animal_servico SET Concluido=?,Agenda=? where idPetshopServico=(Select idPetshopServico from petshop_servico where idPetshop=(select idPetshop where nome="?") and idServico=(select idServico from servico where Nome="?")) and idAnimal=(Select idAnimal from animal where Nome="?")', put.Concluido,put.agenda,put.nomePetshop,put.nomeServico,put.nomeAnimal, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         throw err
@@ -37,8 +37,8 @@ router.put('/animal/servico', function(req, res, next) {
 });
 
 router.delete('/animal/servico', function(req, res, next) {
-  var put = req.body;
-  connection.query('DELETE FROM petshop_servico where idPetshop=(Select idPetshop from petshop where Nome="?") and idServico=(Select idServico from servico where Nome="?")', post.nomePetshop,post.nomeServico, function (err, results, fields) {
+  var del = req.body;
+  connection.query('DELETE FROM animal_servico where idPetshopServico=(Select idPetshopServico from petshop_servico where idPetshop=(select idPetshop from petshop where Nome="?") and idServico=(select idServico from servico where Nome="?")) and idAnimal=(Select idAnimal from animal where Nome="?")', del.nomePetshop,del.nomeServico, del.nomeAnimal, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         throw err
