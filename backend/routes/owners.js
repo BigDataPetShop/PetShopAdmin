@@ -12,6 +12,16 @@ router.get('/dono', function(req, res, next) {
   })
 });
 
+router.get('/dono/count', function(req, res, next) {
+  connection.query('SELECT COUNT(*) as "num" FROM dono', function (err, results, fields) {
+      if (err) {
+        res.status(500).send(err);
+        throw err
+      }
+    res.send(results[0])
+  })
+});
+
 router.post('/dono', function(req, res, next) {
   var post = req.body;
   connection.query('INSERT INTO dono SET ?', post, function (err, results, fields) {
