@@ -42,12 +42,6 @@ CREATE TABLE servico (
     PRIMARY KEY (idServico)
 );
 
-CREATE TABLE produto (
-    idProduto INT NOT NULL AUTO_INCREMENT,
-    Nome VARCHAR(45) NOT NULL,
-    PRIMARY KEY (idProduto)
-);
-
 CREATE TABLE petshop (
     idPetshop INT NOT NULL AUTO_INCREMENT,
     Nome VARCHAR(45) NOT NULL,
@@ -63,39 +57,23 @@ CREATE TABLE dono_animal (
     FOREIGN KEY (idDono) REFERENCES dono(idDono),
     FOREIGN KEY (idAnimal) REFERENCES animal(idAnimal)
 );
+CREATE TABLE petshop_servico (
+    idPetshopServico INT NOT NULL,
+    idPetshop INT NOT NULL,
+    idServico INT NOT NULL,
+    Preco DEC(10,2) NOT NULL,
+    PRIMARY KEY (idPetshopServico),
+    FOREIGN KEY (idPetshop) REFERENCES petshop(idPetshop),
+    FOREIGN KEY (idServico) REFERENCES servico(idServico)
+);
+
 
 CREATE TABLE animal_servico (
     idAnimal INT NOT NULL,
-    idServico INT NOT NULL,
+    idPetshopServico INT NOT NULL,
     Concluido BOOLEAN NOT NULL,
     Agenda date,
-    PRIMARY KEY (idAnimal,idServico),
+    PRIMARY KEY (idAnimal,idPetshopServico),
     FOREIGN KEY (idAnimal) REFERENCES animal(idAnimal),
-    FOREIGN KEY (idServico) REFERENCES servico(idServico)
-);
-
-CREATE TABLE animal_produto (
-    idAnimal INT NOT NULL,
-    idProduto INT NOT NULL,
-    PRIMARY KEY (idAnimal,idProduto),
-    FOREIGN KEY (idAnimal) REFERENCES animal(idAnimal),
-    FOREIGN KEY (idProduto) REFERENCES produto(idProduto)
-);
-
-CREATE TABLE petshop_produto (
-    idPetshop INT NOT NULL,
-    idProduto INT NOT NULL,
-    Preco DEC(10,2) NOT NULL,
-    PRIMARY KEY (idPetshop,idProduto),
-    FOREIGN KEY (idPetshop) REFERENCES petshop(idPetshop),
-    FOREIGN KEY (idProduto) REFERENCES produto(idProduto)
-);
-
-CREATE TABLE petshop_servico (
-    idPetshop INT NOT NULL,
-    idServico INT NOT NULL,
-    Preco DEC(10,2) NOT NULL,
-    PRIMARY KEY (idPetshop,idServico),
-    FOREIGN KEY (idPetshop) REFERENCES petshop(idPetshop),
-    FOREIGN KEY (idServico) REFERENCES servico(idServico)
+    FOREIGN KEY (idPetshopServico) REFERENCES petshop_servico(idPetshopServico)
 );

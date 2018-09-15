@@ -25,7 +25,7 @@ router.get('/produto/:idProduto', function(req, res, next) {
 
 router.post('/produto', function(req, res, next) {
   var post = req.body;
-  connection.query('INSERT INTO produto SET ?', post, function (err, results, fields) {
+  connection.query('INSERT INTO produto VALUES ?', post, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         throw err

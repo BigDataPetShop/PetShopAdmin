@@ -14,7 +14,7 @@ router.get('/dono', function(req, res, next) {
 
 router.post('/dono', function(req, res, next) {
   var post = req.body;
-  connection.query('INSERT INTO dono SET ?', post, function (err, results, fields) {
+  connection.query('INSERT INTO dono VALUES ?', post, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         throw err
