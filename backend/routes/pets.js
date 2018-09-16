@@ -14,11 +14,14 @@ router.get('/animal', function(req, res, next) {
 
 router.post('/animal', function(req, res, next) {
   var post = req.body;
+  connection.query('START TRANSACTION')
   connection.query('INSERT INTO animal VALUES ?,?,?,?,?; INSERT INTO dono_animal VALUES (SELECT max(idAnimal) FROM animal where Nome="?"),(SELECT idDono FROM dono where RG="?")',post.Nome,post.Raca,post.Tipo,post.Sexo,post.dataNascimento,post.Nome,post.RG , function (err, results, fields) {
       if (err) {
+        connection.query('ROLLBACK')
         res.status(500).send(err);
         throw err
       }
+      connection.query('COMMIT')
     res.status(201).send({message: "Animal cadastrado com sucesso!"})
   })
 });
