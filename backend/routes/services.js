@@ -36,7 +36,7 @@ router.post('/servico', function(req, res, next) {
 
 router.put('/servico', function(req, res, next) {
   var put = req.body;
-  connection.query('UPDATE servico SET Nome=? WHERE idServico = (select idServico where Nome="?")', put.novoNome,put.Nome , function (err, results, fields) {
+  connection.query('UPDATE servico SET ? WHERE idServico = put', put , function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         throw err
@@ -47,7 +47,7 @@ router.put('/servico', function(req, res, next) {
 
 router.delete('/servico', function(req, res, next) {
   var del = req.body;
-  connection.query('DELETE FROM servico WHERE idServico = (select idServico where Nome="?")', del.Nome, function (err, results, fields) {
+  connection.query('DELETE FROM servico WHERE idServico = del', del, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         throw err
