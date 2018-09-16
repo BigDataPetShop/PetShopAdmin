@@ -2,9 +2,9 @@ var express = require('express');
 var router = express.Router();
 var connection = require('../connection');
 
-router.get('/dono/animal', function(req, res, next) {
+router.get('/dono/animal/:RG', function(req, res, next) {
   var get = req.body;
-  connection.query('SELECT * FROM dono_animal where idDono=(Select idDono from dono where RG="?")',get.RG, function (err, results, fields) {
+  connection.query('SELECT * FROM dono_animal INNER JOIN animal USING (idAnimal) where idDono=(Select idDono from dono where RG="?")',get.RG, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         throw err
