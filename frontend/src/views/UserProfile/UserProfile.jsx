@@ -94,13 +94,17 @@ class UserProfile extends React.Component {
 
   submitAnimal = () => {
     var animal = {
-      Nome: this.state.nome_dono,
+      Nome: this.state.nome,
       idRaca: this.state.raca,
       idTipo: this.state.tipo,
       Sexo: this.state.sexo,
-      dataNascimento: this.state.dataNascimento
+      dataNascimento: this.state.dataNascimento,
+      RG: this.state.rg_dono
     };
-    submitAnimal(animal);
+    var response = submitAnimal(animal);
+    if (response === "FAILED") {
+      alert("Ocorreu um erro. Tente cadastrar novamente.");
+    }
   };
 
   submitOwner = () => {

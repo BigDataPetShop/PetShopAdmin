@@ -75,7 +75,7 @@ class OwnerPage extends React.Component {
         fetchCompleteAnimalServicesSum(this.state.pet.idAnimal).then(response =>
           this.setState({ totalSpent: response.num })
         );
-        fetchPendingAnimalServices(this.state.pet.idAnimal).then(response =>
+        fetchPendingAnimalServices(4).then(response =>
           this.setState({ nextAppointments: response })
         );
       });
