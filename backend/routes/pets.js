@@ -13,44 +13,15 @@ router.get('/animal', function(req, res, next) {
 });
 
 router.post('/animal', function(req, res, next) {
-  var post_dono_animal = [req.body.Nome, req.body.RG]
-  var post = Object.keys(req.body).map(function(key) {
-    return req.body[key];
-  });
-
-  try {
-    connection.beginTransaction(function(err) {
-      if (err) { throw err; }
-      connection.query('INSERT INTO animal (Nome, idRaca, idTipo, Sexo, dataNascimento) VALUES (?,?,?,?,?)', post, function (error, results, fields) {
-        if (error) {
-          return connection.rollback(function() {
-            throw error;
-          });
-        }
-        console.log('Post ' + results.insertId + ' added');
-        connection.query('INSERT INTO dono_animal (idAnimal,idDono, Principal) VALUES ((SELECT max(idAnimal) FROM animal where Nome=?), (SELECT idDono FROM dono where RG=?), 0)', post_dono_animal, function (error, results, fields) {
-          if (error) {
-            return connection.rollback(function() {
-              throw error;
-            });
-          }
-          connection.commit(function(err) {
-            if (err) {
-              return connection.rollback(function() {
-                throw err;
-              });
-            } else {
-              console.log('success!');
-              res.status(201).send({message: "Animal cadastrado com sucesso!"})
-            }
-          });
-        });
-      });
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({message: "Erro interno de servidor"});
-    next(err);
+  var post = req.body;
+  try{
+    connection.query('START TRANSACTION')
+    connection.query('INSERT INTO animal (Nome,idRaca,idTipo,Sexo,dataNascimento) VALUES (?,?,?,?,?) ',post.Nome,post.Raca,post.Tipo,post.Sexo,post.dataNascimento)
+    connection.query('INSERT INTO dono_animal (idAnimal,idDono) VALUES (SELECT max(idAnimal) FROM animal where Nome=?),(SELECT idDono FROM dono where RG=?)',post.Nome,post.RG)
+    connection.query('COMMIT')
+  }
+  catch(err){
+    connection.query('ROLLBACK')
   }
 });
 
