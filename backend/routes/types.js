@@ -14,7 +14,7 @@ router.get('/tipo', function(req, res, next) {
 
 router.post('/tipo', function(req, res, next) {
   var post = req.body;
-  connection.query('INSERT INTO tipo VALUES ?',post, function (err, results, fields) {
+  connection.query('INSERT INTO tipo (Nome) VALUES (?)',post, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         throw err

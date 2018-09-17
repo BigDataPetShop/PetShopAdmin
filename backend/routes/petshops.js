@@ -14,7 +14,7 @@ router.get('/petshop', function(req, res, next) {
 
 router.post('/petshop', function(req, res, next) {
   var post = req.body;
-  connection.query('INSERT INTO petshop VALUES ?', post, function (err, results, fields) {
+  connection.query('INSERT INTO petshop (Nome,Endereco) VALUES (?,?)', post, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         throw err

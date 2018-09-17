@@ -15,7 +15,7 @@ router.get('/petshop/servico', function(req, res, next) {
 
 router.post('/petshop/servico', function(req, res, next) {
   var post = req.body;
-  connection.query('INSERT INTO petshop_servico VALUES(Select idPetshop from petshop where Nome=?),(Select idServico from servico where Nome=?),?', post.nomePetshop,post.nomeServico,post.Preco, function (err, results, fields) {
+  connection.query('INSERT INTO petshop_servico (idPetshop, idServico, Preco)VALUES (Select idPetshop from petshop where Nome=?),(Select idServico from servico where Nome=?),?', post.nomePetshop,post.nomeServico,post.Preco, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         throw err

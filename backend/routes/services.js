@@ -25,7 +25,7 @@ router.get('/servico/:idServico', function(req, res, next) {
 
 router.post('/servico', function(req, res, next) {
   var post = req.body;
-  connection.query('INSERT INTO servico VALUES ?', post, function (err, results, fields) {
+  connection.query('INSERT INTO servico (Nome) VALUES (?)', post, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         throw err

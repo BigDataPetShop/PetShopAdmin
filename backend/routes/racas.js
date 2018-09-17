@@ -14,7 +14,7 @@ router.get('/raca', function(req, res, next) {
 
 router.post('/raca', function(req, res, next) {
   var post = req.body;
-  connection.query('INSERT INTO raca VALUES ?',post, function (err, results, fields) {
+  connection.query('INSERT INTO raca (Nome) VALUES ?',post, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         throw err

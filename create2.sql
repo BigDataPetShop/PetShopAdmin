@@ -5,13 +5,13 @@ USE petshop;
 
 CREATE TABLE tipo (
     idTipo INT NOT NULL AUTO_INCREMENT,
-    Nome VARCHAR(45) NOT NULL,
+    Nome VARCHAR(45) NOT NULL UNIQUE,
     PRIMARY KEY (idTipo)
 );
 
 CREATE TABLE raca (
     idRaca INT NOT NULL AUTO_INCREMENT,
-    Nome VARCHAR(45) NOT NULL,
+    Nome VARCHAR(45) NOT NULL UNIQUE,
     PRIMARY KEY (idRaca)
 );
 
@@ -38,7 +38,7 @@ CREATE TABLE dono (
 
 CREATE TABLE servico (
     idServico INT NOT NULL AUTO_INCREMENT,
-    Nome VARCHAR(45) NOT NULL,
+    Nome VARCHAR(45) NOT NULL UNIQUE,
     PRIMARY KEY (idServico)
 );
 
@@ -52,13 +52,12 @@ CREATE TABLE petshop (
 CREATE TABLE dono_animal (
     idDono INT NOT NULL,
     idAnimal INT NOT NULL,
-    Principal BOOLEAN NOT NULL,
     PRIMARY KEY (idDono,idAnimal),
     FOREIGN KEY (idDono) REFERENCES dono(idDono),
     FOREIGN KEY (idAnimal) REFERENCES animal(idAnimal)
 );
 CREATE TABLE petshop_servico (
-    idPetshopServico INT NOT NULL,
+    idPetshopServico INT NOT NULL AUTO_INCREMENT,
     idPetshop INT NOT NULL,
     idServico INT NOT NULL,
     Preco DEC(10,2) NOT NULL,

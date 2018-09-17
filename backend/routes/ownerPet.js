@@ -15,7 +15,7 @@ router.get('/dono/animal/:RG', function(req, res, next) {
 
 router.post('/dono/animal', function(req, res, next) {
   var post = req.body;
-  connection.query('INSERT INTO dono_animal VALUES (SELECT max(idAnimal) FROM animal where Nome="?"),(SELECT idDono FROM dono where RG="?")', post.nomeAnimal,post.RG, function (err, results, fields) {
+  connection.query('INSERT INTO dono_animal (idanimal,idDono) VALUES ((SELECT max(idAnimal) FROM animal where Nome=?),(SELECT idDono FROM dono where RG=?))', post.nomeAnimal,post.RG, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         throw err
@@ -26,7 +26,7 @@ router.post('/dono/animal', function(req, res, next) {
 
 router.delete('/dono/animal', function(req, res, next) {
   var del = req.body;
-  connection.query('DELETE FROM dono_animal WHERE idDono=(SELECT idDono FROM dono where RG="?") AND idAnimal=(select idAnimal where Nome="?")', del.RG,del.nomeAnimal, function (err, results, fields) {
+  connection.query('DELETE FROM dono_animal WHERE idDono=(SELECT idDono FROM dono where RG=?) AND idAnimal=(select idAnimal where Nome=?)', del.RG,del.nomeAnimal, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         throw err

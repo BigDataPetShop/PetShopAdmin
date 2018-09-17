@@ -3,7 +3,7 @@ var router = express.Router();
 var connection = require('../connection');
 
 router.get('/animal', function(req, res, next) {
-  connection.query('SELECT * FROM animal INNER JOIN raca USING (idRaca) INNER JOIN tipo USING (idTipo)', function (err, results, fields) {
+  connection.query('SELECT animal.Nome as nomeAnimal,raca.Nome as nomeRaca, tipo.Nome as nomeTipo, animal.Sexo, animal.dataNascimento FROM animal INNER JOIN raca USING (idRaca) INNER JOIN tipo USING (idTipo)', function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         throw err
@@ -14,16 +14,14 @@ router.get('/animal', function(req, res, next) {
 
 router.post('/animal', function(req, res, next) {
   var post = req.body;
-  connection.query('START TRANSACTION')
-  connection.query('INSERT INTO animal VALUES ?,?,?,?,?; INSERT INTO dono_animal VALUES (SELECT max(idAnimal) FROM animal where Nome="?"),(SELECT idDono FROM dono where RG="?")',post.Nome,post.Raca,post.Tipo,post.Sexo,post.dataNascimento,post.Nome,post.RG , function (err, results, fields) {
-      if (err) {
-        connection.query('ROLLBACK')
-        res.status(500).send(err);
-        throw err
-      }
-      connection.query('COMMIT')
-    res.status(201).send({message: "Animal cadastrado com sucesso!"})
-  })
+  try{
+    connection.query('START TRANSACTION')
+    connection.query('INSERT INTO animal (Nome,idRaca,idTipo,Sexo,dataNascimento) VALUES (?,?,?,?,?); INSERT INTO dono_animal VALUES (SELECT max(idAnimal) FROM animal where Nome="?"),(SELECT idDono FROM dono where RG="?")',post.Nome,post.Raca,post.Tipo,post.Sexo,post.dataNascimento,post.Nome,post.RG)
+    connection.query('COMMIT')
+  }
+  catch(err){
+    connection.query('ROLLBACK')
+  }
 });
 
 router.put('/animal', function(req, res, next) {
