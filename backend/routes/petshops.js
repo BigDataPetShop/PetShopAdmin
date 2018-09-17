@@ -34,15 +34,15 @@ router.put('/petshop', function(req, res, next) {
   })
 });
 
-router.delete('/petshop', function(req, res, next) {
-  var del = req.body;
-  connection.query('DELETE FROM petshop WHERE Endereco = ? AND Nome = ?', [del.Endereco, del.Nome], function (err, results, fields) {
-      if (err) {
-        res.status(500).send(err);
-        throw err
-      }
-    res.status(200).send({message: "Petshop apagado com sucesso!"})
-  })
-});
+// router.delete('/petshop', function(req, res, next) {
+//   var del = req.body;
+//   connection.query('DELETE FROM petshop WHERE Endereco = ? AND Nome = ?', [del.Endereco, del.Nome], function (err, results, fields) {
+//       if (err) {
+//         res.status(500).send(err);
+//         throw err
+//       }
+//     res.status(200).send({message: "Petshop apagado com sucesso!"})
+//   })
+// });
 
 module.exports = router;

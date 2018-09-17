@@ -3,13 +3,76 @@ var router = express.Router();
 var connection = require('../connection');
 
 router.get('/animal/servico', function(req, res, next) {
-  var get = req.body;
-  connection.query('SELECT * FROM animal_servico INNER JOIN petshop_servico USING (idPetshopServico) INNER JOIN petshop USING (idPetshop) INNER JOIN servico USING (idServico) where idAnimal=(Select idAnimal from animal where Nome="?")',get, function (err, results, fields) {
+  connection.query('SELECT * FROM animal_servico INNER JOIN petshop_servico USING (idPetshopServico) INNER JOIN petshop USING (idPetshop) INNER JOIN servico USING (idServico)', function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         throw err
       }
-    res.send(results)
+    res.status(200).send(results)
+  })
+});
+
+router.get('/animal/servico/pending', function(req, res, next) {
+  connection.query('SELECT *, petshop.Nome as nomePetshop, servico.Nome as nomeServico FROM animal_servico INNER JOIN petshop_servico USING (idPetshopServico) INNER JOIN petshop USING (idPetshop) INNER JOIN servico USING (idServico) WHERE Concluido=0', function (err, results, fields) {
+      if (err) {
+        res.status(500).send(err);
+        throw err
+      }
+    res.status(200).send(results)
+  })
+});
+
+router.get('/animal/servico/pending/:idAnimal', function(req, res, next) {
+  var params = req.params.idAnimal;
+  connection.query('SELECT *, petshop.Nome as nomePetshop, servico.Nome as nomeServico FROM animal_servico INNER JOIN petshop_servico USING (idPetshopServico) INNER JOIN petshop USING (idPetshop) INNER JOIN servico USING (idServico) WHERE Concluido=0 and idAnimal=?', params, function (err, results, fields) {
+      if (err) {
+        res.status(500).send(err);
+        throw err
+      }
+    res.status(200).send(results)
+  })
+});
+
+router.get('/animal/servico/complete/:idAnimal', function(req, res, next) {
+  var params = req.params.idAnimal;
+  connection.query('SELECT *, petshop.Nome as nomePetshop, servico.Nome as nomeServico FROM animal_servico INNER JOIN petshop_servico USING (idPetshopServico) INNER JOIN petshop USING (idPetshop) INNER JOIN servico USING (idServico) WHERE Concluido=1 and idAnimal=?', params, function (err, results, fields) {
+      if (err) {
+        res.status(500).send(err);
+        throw err
+      }
+    res.status(200).send(results)
+  })
+});
+
+
+router.get('/animal/servico/sum/petshop/:idPetshop', function(req, res, next) {
+  connection.query('SELECT SUM(Preco) as num, petshop.Nome from animal_servico INNER JOIN petshop_servico USING (idPetshopServico) inner join petshop using (idPetshop) WHERE Concluido=1 group by idPetshop', function (err, results, fields) {
+      if (err) {
+        res.status(500).send(err);
+        throw err
+      }
+    res.status(200).send(results[0])
+  })
+});
+
+router.get('/animal/servico/sum/:idAnimal', function(req, res, next) {
+  var params = req.params.idAnimal;
+  connection.query('SELECT SUM(Preco) as num FROM animal_servico INNER JOIN petshop_servico USING (idPetshopServico) where Concluido=1 and idAnimal=?', params, function (err, results, fields) {
+      if (err) {
+        res.status(500).send(err);
+        throw err
+      }
+    res.status(200).send(results[0])
+  })
+});
+
+router.get('/animal/servico/sum/servico/:idServico', function(req, res, next) {
+  connection.query('SELECT SUM(Preco) as num, servico.Nome as nomeServico FROM animal_servico INNER JOIN petshop_servico USING (idPetshopServico) inner join servico using (idServico) where Concluido=1 group by idServico', function (err, results, fields) {
+      if (err) {
+        res.status(500).send(err);
+        throw err
+      }
+    res.status(200).send(results[0])
   })
 });
 

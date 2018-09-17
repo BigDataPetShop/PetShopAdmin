@@ -2,12 +2,17 @@ import React from "react";
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 // core components
+import Button from "@material-ui/core/Button";
 import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import Table from "components/Table/Table.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
+import Search from "@material-ui/icons/Search";
+
+// core components
+import CustomInput from "components/CustomInput/CustomInput.jsx";
 
 import { fetchOwners, fetchAnimals } from "../../helper.js";
 
@@ -41,7 +46,7 @@ const styles = {
   }
 };
 
-class TableList extends React.Component {
+class Querys extends React.Component {
   state = {
     animals: [],
     owners: [],
@@ -73,51 +78,51 @@ class TableList extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <GridContainer>
-        <GridItem xs={12} sm={12} md={12}>
-          <Card>
-            <CardHeader color="primary">
-              <h4 className={classes.cardTitleWhite}>Animais Cadastrados</h4>
-              <p className={classes.cardCategoryWhite}>
-                Uma lista dos animais cadastrados
-              </p>
-            </CardHeader>
-            <CardBody>
-              <Table
-                tableHeaderColor="primary"
-                tableHead={[
-                  "ID",
-                  "Nome",
-                  "Raça",
-                  "Tipo",
-                  "Data de Nascimento",
-                  "Sexo"
-                ]}
-                tableData={this.state.animals}
-              />
-            </CardBody>
-          </Card>
-        </GridItem>
-        <GridItem xs={12} sm={12} md={12}>
-          <Card>
-            <CardHeader color="primary">
-              <h4 className={classes.cardTitleWhite}>Donos Cadastrados</h4>
-              <p className={classes.cardCategoryWhite}>
-                Uma lista dos donos cadastrados
-              </p>
-            </CardHeader>
-            <CardBody>
-              <Table
-                tableHeaderColor="primary"
-                tableHead={["ID", "Nome", "RG", "Estado", "Email"]}
-                tableData={this.state.owners}
-              />
-            </CardBody>
-          </Card>
-        </GridItem>
-      </GridContainer>
+      <div>
+        <GridContainer>
+          <GridItem xs={12} sm={12} md={12}>
+            <CustomInput
+              formControlProps={{
+                className: classes.margin + " " + classes.search
+              }}
+              inputProps={{
+                placeholder: "Pesquisar",
+                inputProps: {
+                  "aria-label": "Search"
+                }
+              }}
+            />
+            <Button color="default" aria-label="edit" round="true">
+              <Search />
+            </Button>
+          </GridItem>
+        </GridContainer>
+        <GridContainer>
+          <GridItem xs={12} sm={12} md={12}>
+            <Card>
+              <CardHeader color="primary">
+                <h4 className={classes.cardTitleWhite}>Consultas</h4>
+              </CardHeader>
+              <CardBody>
+                <Table
+                  tableHeaderColor="primary"
+                  tableHead={[
+                    "ID",
+                    "Nome",
+                    "Raça",
+                    "Tipo",
+                    "Sexo",
+                    "Data de Nascimento"
+                  ]}
+                  tableData={this.state.animals}
+                />
+              </CardBody>
+            </Card>
+          </GridItem>
+        </GridContainer>
+      </div>
     );
   }
 }
 
-export default withStyles(styles)(TableList);
+export default withStyles(styles)(Querys);

@@ -22,6 +22,7 @@ CREATE TABLE animal (
     idTipo INT NOT NULL,
     Sexo VARCHAR(10) NOT NULL,
     dataNascimento date,
+    Vivo BOOLEAN NOT NULL,
     PRIMARY KEY (idAnimal),
     FOREIGN KEY (idTipo) REFERENCES tipo(idTipo),
     FOREIGN KEY (idRaca) REFERENCES raca(idRaca)
@@ -65,7 +66,6 @@ CREATE TABLE petshop_servico (
     FOREIGN KEY (idPetshop) REFERENCES petshop(idPetshop),
     FOREIGN KEY (idServico) REFERENCES servico(idServico)
 );
-
 
 CREATE TABLE animal_servico (
     idAnimal INT NOT NULL,

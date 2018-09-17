@@ -26,7 +26,7 @@ INSERT INTO servico VALUES (3,"Banho e Tosa");
 INSERT INTO servico VALUES (4,"Dog Walker");
 
 INSERT INTO produto VALUES (1,"Osso");
-INSERT INTO produto VALUES (2,"Ração");
+INSERT INTO produto VALUES (2,"Racao");
 INSERT INTO produto VALUES (3,"Bola");
 
 INSERT INTO petshop VALUES (1,"Mais Caes", "Vila Olimpia");

@@ -9,18 +9,14 @@ import Icon from "@material-ui/core/Icon";
 import Store from "@material-ui/icons/Store";
 import Warning from "@material-ui/icons/Warning";
 import DateRange from "@material-ui/icons/DateRange";
-import LocalOffer from "@material-ui/icons/LocalOffer";
 import Update from "@material-ui/icons/Update";
 import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import AccessTime from "@material-ui/icons/AccessTime";
 import Accessibility from "@material-ui/icons/Accessibility";
-import BugReport from "@material-ui/icons/BugReport";
-import Code from "@material-ui/icons/Code";
-import Cloud from "@material-ui/icons/Cloud";
+import ShoppingCart from "@material-ui/icons/ShoppingCart";
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
-import Table from "components/Table/Table.jsx";
 import Tasks from "components/Tasks/Tasks.jsx";
 import CustomTabs from "components/CustomTabs/CustomTabs.jsx";
 import Danger from "components/Typography/Danger.jsx";
@@ -30,7 +26,7 @@ import CardIcon from "components/Card/CardIcon.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 
-import { bugs, website, server } from "variables/general";
+import { bugs, website } from "variables/general";
 
 import {
   dailySalesChart,
@@ -38,12 +34,21 @@ import {
   completedTasksChart
 } from "variables/charts";
 
+import { allClients, allPayments } from "../../helper.js";
+
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.jsx";
 
 class Dashboard extends React.Component {
   state = {
-    value: 0
+    payments: 0,
+    clients: 0
   };
+
+  componentDidMount() {
+    allClients().then(response => this.setState({ clients: response.num }));
+    allPayments(1).then(response => this.setState({ payments: response.num }));
+  }
+
   handleChange = (event, value) => {
     this.setState({ value });
   };
@@ -51,6 +56,7 @@ class Dashboard extends React.Component {
   handleChangeIndex = index => {
     this.setState({ value: index });
   };
+
   render() {
     const { classes } = this.props;
     return (
@@ -71,7 +77,7 @@ class Dashboard extends React.Component {
                     <Warning />
                   </Danger>
                   <a href="#pablo" onClick={e => e.preventDefault()}>
-                    Get more space
+                    Existem serviços pendentes!
                   </a>
                 </div>
               </CardFooter>
@@ -84,12 +90,15 @@ class Dashboard extends React.Component {
                   <Store />
                 </CardIcon>
                 <p className={classes.cardCategory}>Renda</p>
-                <h3 className={classes.cardTitle}>$34,245</h3>
+                <h3 className={classes.cardTitle}>
+                  R$
+                  {this.state.payments}0
+                </h3>
               </CardHeader>
               <CardFooter stats>
                 <div className={classes.stats}>
                   <DateRange />
-                  Last 24 Hours
+                  Último mês
                 </div>
               </CardFooter>
             </Card>
@@ -105,8 +114,8 @@ class Dashboard extends React.Component {
               </CardHeader>
               <CardFooter stats>
                 <div className={classes.stats}>
-                  <LocalOffer />
-                  Tracked from Github
+                  <Update />
+                  Atualizado agora
                 </div>
               </CardFooter>
             </Card>
@@ -118,7 +127,7 @@ class Dashboard extends React.Component {
                   <Accessibility />
                 </CardIcon>
                 <p className={classes.cardCategory}>Clientes</p>
-                <h3 className={classes.cardTitle}>+245</h3>
+                <h3 className={classes.cardTitle}>{this.state.clients}</h3>
               </CardHeader>
               <CardFooter stats>
                 <div className={classes.stats}>
@@ -142,17 +151,17 @@ class Dashboard extends React.Component {
                 />
               </CardHeader>
               <CardBody>
-                <h4 className={classes.cardTitle}>Daily Sales</h4>
+                <h4 className={classes.cardTitle}>Vendas Diárias</h4>
                 <p className={classes.cardCategory}>
                   <span className={classes.successText}>
                     <ArrowUpward className={classes.upArrowCardCategory} /> 55%
                   </span>{" "}
-                  increase in today sales.
+                  aumento nas vendas diárias.
                 </p>
               </CardBody>
               <CardFooter chart>
                 <div className={classes.stats}>
-                  <AccessTime /> updated 4 minutes ago
+                  <AccessTime /> atualizado há 4 minutos atrás
                 </div>
               </CardFooter>
             </Card>
@@ -170,14 +179,14 @@ class Dashboard extends React.Component {
                 />
               </CardHeader>
               <CardBody>
-                <h4 className={classes.cardTitle}>Email Subscriptions</h4>
+                <h4 className={classes.cardTitle}>Serviços Prestados</h4>
                 <p className={classes.cardCategory}>
-                  Last Campaign Performance
+                  Número total de serviços prestados por mês
                 </p>
               </CardBody>
               <CardFooter chart>
                 <div className={classes.stats}>
-                  <AccessTime /> campaign sent 2 days ago
+                  <AccessTime /> atualizado há 1 dia atrás
                 </div>
               </CardFooter>
             </Card>
@@ -194,28 +203,28 @@ class Dashboard extends React.Component {
                 />
               </CardHeader>
               <CardBody>
-                <h4 className={classes.cardTitle}>Completed Tasks</h4>
+                <h4 className={classes.cardTitle}>Horário de Pico</h4>
                 <p className={classes.cardCategory}>
-                  Last Campaign Performance
+                  Número de serviços cadastrados por horário
                 </p>
               </CardBody>
               <CardFooter chart>
                 <div className={classes.stats}>
-                  <AccessTime /> campaign sent 2 days ago
+                  <AccessTime /> atualizado há 2 horas atrás
                 </div>
               </CardFooter>
             </Card>
           </GridItem>
         </GridContainer>
         <GridContainer>
-          <GridItem xs={12} sm={12} md={6}>
+          <GridItem xs={12} sm={12} md={12}>
             <CustomTabs
-              title="Tasks:"
+              title="Pendências:"
               headerColor="primary"
               tabs={[
                 {
-                  tabName: "Bugs",
-                  tabIcon: BugReport,
+                  tabName: "Serviços",
+                  tabIcon: Store,
                   tabContent: (
                     <Tasks
                       checkedIndexes={[0, 3]}
@@ -225,8 +234,8 @@ class Dashboard extends React.Component {
                   )
                 },
                 {
-                  tabName: "Website",
-                  tabIcon: Code,
+                  tabName: "Produtos Reservados",
+                  tabIcon: ShoppingCart,
                   tabContent: (
                     <Tasks
                       checkedIndexes={[0]}
@@ -234,42 +243,9 @@ class Dashboard extends React.Component {
                       tasks={website}
                     />
                   )
-                },
-                {
-                  tabName: "Server",
-                  tabIcon: Cloud,
-                  tabContent: (
-                    <Tasks
-                      checkedIndexes={[1]}
-                      tasksIndexes={[0, 1, 2]}
-                      tasks={server}
-                    />
-                  )
                 }
               ]}
             />
-          </GridItem>
-          <GridItem xs={12} sm={12} md={6}>
-            <Card>
-              <CardHeader color="warning">
-                <h4 className={classes.cardTitleWhite}>Employees Stats</h4>
-                <p className={classes.cardCategoryWhite}>
-                  New employees on 15th September, 2016
-                </p>
-              </CardHeader>
-              <CardBody>
-                <Table
-                  tableHeaderColor="warning"
-                  tableHead={["ID", "Name", "Salary", "Country"]}
-                  tableData={[
-                    ["1", "Dakota Rice", "$36,738", "Niger"],
-                    ["2", "Minerva Hooper", "$23,789", "Curaçao"],
-                    ["3", "Sage Rodriguez", "$56,142", "Netherlands"],
-                    ["4", "Philip Chaney", "$38,735", "Korea, South"]
-                  ]}
-                />
-              </CardBody>
-            </Card>
           </GridItem>
         </GridContainer>
       </div>

@@ -5,12 +5,16 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 // Import Routes
+var breedsRouter = require('./routes/breeds');
+var ownerPetRouter = require('./routes/ownerPet');
 var ownersRouter = require('./routes/owners');
 var petsRouter = require('./routes/pets');
+var petshopsRouter = require('./routes/petshops');
+var petshopsServicesRouter = require('./routes/petshopsServices');
+var petsServicesRouter = require('./routes/petsServices')
 var productsRouter = require('./routes/products');
 var servicesRouter = require('./routes/services');
-var petshopsRouter = require('./routes/petshops');
-var ownerPetRouter = require('./routes/ownerPet');
+var typesRouter = require('./routes/types');
 
 var app = express();
 
@@ -25,12 +29,17 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Routers
+app.use('/', breedsRouter);
+app.use('/', ownerPetRouter);
 app.use('/', ownersRouter);
 app.use('/', petsRouter);
+app.use('/', petshopsRouter);
+app.use('/', petshopsServicesRouter);
+app.use('/', petsServicesRouter);
 app.use('/', productsRouter);
 app.use('/', servicesRouter);
-app.use('/', petshopsRouter);
-app.use('/', ownerPetRouter);
+app.use('/', typesRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

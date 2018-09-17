@@ -24,8 +24,11 @@ router.get('/servico/:idServico', function(req, res, next) {
 });
 
 router.post('/servico', function(req, res, next) {
-  var post = req.body;
-  connection.query('INSERT INTO servico (Nome) VALUES (?)', post, function (err, results, fields) {
+  var post = Object.keys(req.body).map(function(key) {
+    return req.body[key];
+  });
+
+  connection.query('INSERT INTO servico Nome VALUES ?', post, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         throw err
@@ -35,8 +38,8 @@ router.post('/servico', function(req, res, next) {
 });
 
 router.put('/servico', function(req, res, next) {
-  var put = req.body;
-  connection.query('UPDATE servico SET ? WHERE idServico = put', put , function (err, results, fields) {
+  var put = req.body.idServico;
+  connection.query('UPDATE servico SET ? WHERE idServico = ?', put , function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         throw err
@@ -45,15 +48,26 @@ router.put('/servico', function(req, res, next) {
   })
 });
 
-router.delete('/servico', function(req, res, next) {
-  var del = req.body;
-  connection.query('DELETE FROM servico WHERE idServico = del', del, function (err, results, fields) {
+router.put('/servico/concluido', function(req, res, next) {
+  var put = req.body.idServico;
+  connection.query('UPDATE servico SET Concluido=1 WHERE idServico = ?', put , function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         throw err
       }
-    res.status(200).send({message: "Servico apagado com sucesso!"})
+    res.status(200).send({message: "Servico concluido com sucesso!"})
   })
 });
+
+// router.delete('/servico', function(req, res, next) {
+//   var del = req.body;
+//   connection.query('DELETE FROM servico WHERE idServico = del', del, function (err, results, fields) {
+//       if (err) {
+//         res.status(500).send(err);
+//         throw err
+//       }
+//     res.status(200).send({message: "Servico apagado com sucesso!"})
+//   })
+// });
 
 module.exports = router;
