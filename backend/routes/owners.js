@@ -8,8 +8,24 @@ router.get('/dono', function(req, res, next) {
       res.status(500).send(err);
       return console.log(err)
     }
-    res.send(results)
+    res.status(200).send(results)
   })
+});
+
+router.get('/dono/:Email', function(req, res, next) {
+  var params = req.params.Email;
+  connection.query('SELECT * FROM dono WHERE Email=?', params, function (err, results, fields) {
+    if (err) {
+      res.status(500).send(err);
+      return console.log(err)
+    }
+    
+    if (results[0]) {
+      res.status(200).send(results[0]);
+    } else {
+      res.status(404).send({ message: "Nenhum dono encontrado" });
+    }
+  });
 });
 
 router.get('/dono/count', function(req, res, next) {
