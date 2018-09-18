@@ -6,42 +6,42 @@ router.get('/tipo', function(req, res, next) {
   connection.query('SELECT * FROM tipo', function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
-        throw err
+        return console.log(err);
       }
     res.send(results)
   })
 });
 
 router.post('/tipo', function(req, res, next) {
-  var post = req.body;
-  connection.query('INSERT INTO tipo (Nome) VALUES (?)',post, function (err, results, fields) {
+  var post = req.body.Nome;
+  connection.query('INSERT INTO tipo (Nome) VALUES (?)', post, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
-        throw err
+        return console.log(err);
       }
-    res.status(201).send({message: "tipo cadastrado com sucesso!"})
+    res.status(201).send({message: "Tipo cadastrado com sucesso!"})
   })
 });
 
 router.put('/tipo', function(req, res, next) {
-  var put = req.body;
-  connection.query('UPDATE tipo SET ? WHERE idTipo=(SELECT idTipo where nome like "?")', put, put.Nome, function (err, results, fields) {
+  var put = [req.body.novoNome, req.body.Nome];
+  connection.query('UPDATE tipo SET Nome=? WHERE idTipo=(SELECT idTipo WHERE Nome=?)', put, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
-        throw err
+        return console.log(err);
       }
-    res.status(200).send({message: "tipo atualizado com sucesso!"})
+    res.status(200).send({message: "Tipo atualizado com sucesso!"})
   })
 });
 
 router.delete('/tipo', function(req, res, next) {
-  var del = req.body;
-  connection.query('DELETE FROM tipo WHERE idTipo = (SELECT idTipo where nome like "?")', del.Nome, function (err, results, fields) {
+  var del = req.body.Nome;
+  connection.query('DELETE FROM tipo WHERE idTipo = (SELECT idTipo WHERE Nome=?)', del, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
-        throw err
+        return console.log(err);
       }
-    res.status(200).send({message: "tipo apagado com sucesso!"})
+    res.status(200).send({message: "Tipo apagado com sucesso!"})
   })
 });
 

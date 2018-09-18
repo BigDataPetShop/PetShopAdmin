@@ -6,18 +6,20 @@ router.get('/petshop', function(req, res, next) {
   connection.query('SELECT * FROM petshop', function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
-        throw err
+        return console.log(err);
       }
     res.send(results)
   })
 });
 
 router.post('/petshop', function(req, res, next) {
-  var post = req.body;
+  var post = Object.keys(req.body).map(function(key) {
+    return req.body[key];
+  });
   connection.query('INSERT INTO petshop (Nome,Endereco) VALUES (?,?)', post, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
-        throw err
+        return console.log(err);
       }
     res.status(201).send({message: "Petshop cadastrado com sucesso!"})
   })
@@ -25,24 +27,24 @@ router.post('/petshop', function(req, res, next) {
 
 router.put('/petshop', function(req, res, next) {
   var put = req.body;
-  connection.query('UPDATE petshop SET ? WHERE Endereco = ? OR Nome = ?', [put, put.Endereco, put.Nome], function (err, results, fields) {
+  connection.query('UPDATE petshop SET ? WHERE idPetshop=?', [put, put.idPetshop], function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
-        throw err
+        return console.log(err);
       }
     res.status(200).send({message: "Petshop atualizado com sucesso!"})
   })
 });
 
-// router.delete('/petshop', function(req, res, next) {
-//   var del = req.body;
-//   connection.query('DELETE FROM petshop WHERE Endereco = ? AND Nome = ?', [del.Endereco, del.Nome], function (err, results, fields) {
-//       if (err) {
-//         res.status(500).send(err);
-//         throw err
-//       }
-//     res.status(200).send({message: "Petshop apagado com sucesso!"})
-//   })
-// });
+router.delete('/petshop', function(req, res, next) {
+  var del = req.body;
+  connection.query('DELETE FROM petshop WHERE idPetshop=?', del.idPetshop, function (err, results, fields) {
+      if (err) {
+        res.status(500).send(err);
+        return console.log(err);
+      }
+    res.status(200).send({message: "Petshop apagado com sucesso!"})
+  })
+});
 
 module.exports = router;

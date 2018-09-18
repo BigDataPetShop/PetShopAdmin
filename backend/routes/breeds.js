@@ -6,40 +6,40 @@ router.get('/raca', function(req, res, next) {
   connection.query('SELECT * FROM raca', function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
-        throw err
+        return console.log(err);
       }
     res.status(200).send(results)
   })
 });
 
 router.post('/raca', function(req, res, next) {
-  var post = req.body;
-  connection.query('INSERT INTO raca VALUES ?', post, function (err, results, fields) {
+  var post = req.body.Nome;
+  connection.query('INSERT INTO raca (Nome) VALUES (?)', post, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
-        throw err
+        return console.log(err);
       }
     res.status(201).send({message: "Raca cadastrado com sucesso!"})
   })
 });
 
 router.put('/raca', function(req, res, next) {
-  var put = req.body;
-  connection.query('UPDATE raca SET ? WHERE idRaca=(SELECT idRaca where nome like "?")', put, put.Nome, function (err, results, fields) {
+  var put = [req.body.novoNome, req.body.Nome];
+  connection.query('UPDATE raca SET Nome=? WHERE idRaca=(SELECT idRaca WHERE Nome=?)', put, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
-        throw err
+        return console.log(err);
       }
     res.status(200).send({message: "Raca atualizado com sucesso!"})
   })
 });
 
 router.delete('/raca', function(req, res, next) {
-  var del = req.body;
-  connection.query('DELETE FROM raca WHERE idRaca = (SELECT idRaca where nome like "?")', del.Nome, function (err, results, fields) {
+  var del = req.body.Nome;
+  connection.query('DELETE FROM raca WHERE idRaca=(SELECT idRaca WHERE Nome=?)', del, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
-        throw err
+        return console.log(err);
       }
     res.status(200).send({message: "Raca apagado com sucesso!"})
   })
