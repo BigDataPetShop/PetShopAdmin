@@ -41,8 +41,8 @@ INSERT INTO petshop_servico VALUES (4,2,1,18);
 INSERT INTO petshop_servico VALUES (5,2,2,17);
 INSERT INTO petshop_servico VALUES (6,2,4,40);
 
-INSERT INTO animal_servico VALUES (1,1,1,'2018-08-18');
-INSERT INTO animal_servico VALUES (4,3,0,'2018-08-30');
-INSERT INTO animal_servico VALUES (2,4,0,'2018-09-10');
+INSERT INTO animal_servico VALUES (1,1,1,1,'2018-08-18');
+INSERT INTO animal_servico VALUES (2,4,3,0,'2018-08-30');
+INSERT INTO animal_servico VALUES (3,2,4,0,'2018-09-10');
 
 

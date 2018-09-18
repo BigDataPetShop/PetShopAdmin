@@ -25,25 +25,36 @@ router.get('/petshop/servico/', function(req, res, next) {
 });
 
 router.post('/petshop/servico', function(req, res, next) {
-  var post_servico = [req.body.nomeServico];
-  var post_servico_petshop = [req.body.idPetshop, req.body.nomeServico, req.body.Preco]
-  connection.query('INSERT INTO servico (Nome) VALUES (?)', post_servico, function (err, results, fields) {
+  var post = [req.body.nomeServico,req.body.idPetshop , req.body.Preco]
+  connection.query('CALL createPetshopService(?,?,?)', post, function (err, results, fields) {
     if (err) {
-      console.log("DEU ERRO NO PRIMEIRO");
-      
       res.status(500).send(err);
       return console.log(err);
     }
-    connection.query('INSERT INTO petshop_servico (idPetshop, idServico, Preco) VALUES (?,(SELECT MAX(idServico) FROM servico WHERE Nome=?), ?)', post_servico_petshop, function (err, results, fields) {
-      if (err) {
-        console.log("DEU ERRO NO SEGUNDO");
-        res.status(500).send(err);
-        return console.log(err);
-      }
-    });
+    console.log(results);
     res.status(201).send({message: "Servico cadastrado e vinculado ao petshop com sucesso!"});
-  });
+  })
 });
+
+
+// Alterado para o de cima com o CALL createPetshopService
+// router.post('/petshop/servico', function(req, res, next) {
+//   var post_servico = [req.body.nomeServico];
+//   var post_servico_petshop = [req.body.idPetshop, req.body.nomeServico, req.body.Preco]
+//   connection.query('INSERT INTO servico (Nome) VALUES (?)', post_servico, function (err, results, fields) {
+//     if (err) {
+//       res.status(500).send(err);
+//       return console.log(err);
+//     }
+//     connection.query('INSERT INTO petshop_servico (idPetshop, idServico, Preco) VALUES (?,(SELECT MAX(idServico) FROM servico WHERE Nome=?), ?)', post_servico_petshop, function (err, results, fields) {
+//       if (err) {
+//         res.status(500).send(err);
+//         return console.log(err);
+//       }
+//     });
+//     res.status(201).send({message: "Servico cadastrado e vinculado ao petshop com sucesso!"});
+//   });
+// });
 
 router.put('/petshop/servico', function(req, res, next) {
   var get = [req.body.nomeServico, req.body.idPetshop];

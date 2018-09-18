@@ -61,9 +61,8 @@ router.post('/animal', function(req, res, next) {
       });
     });
   } catch (error) {
-    console.log(error);
     res.status(500).send({message: "Erro interno de servidor"});
-    return next(err);
+    return console.log(error);;
   }
 });
 

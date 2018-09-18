@@ -2,6 +2,7 @@ DROP DATABASE IF EXISTS petshop;
 CREATE DATABASE petshop;
 USE petshop;
 
+SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 
 CREATE TABLE tipo (
     idTipo INT NOT NULL AUTO_INCREMENT,
@@ -62,17 +63,46 @@ CREATE TABLE petshop_servico (
     idPetshop INT NOT NULL,
     idServico INT NOT NULL,
     Preco DEC(10,2) NOT NULL,
-    PRIMARY KEY (idPetshopServico),
+    PRIMARY KEY (idPetshopServico ),
     FOREIGN KEY (idPetshop) REFERENCES petshop(idPetshop),
     FOREIGN KEY (idServico) REFERENCES servico(idServico)
 );
 
 CREATE TABLE animal_servico (
+    idAnimalServico INT NOT NULL AUTO_INCREMENT,
     idAnimal INT NOT NULL,
     idPetshopServico INT NOT NULL,
     Concluido BOOLEAN NOT NULL,
     Agenda date,
-    PRIMARY KEY (idAnimal,idPetshopServico),
+    PRIMARY KEY (idAnimalServico),
     FOREIGN KEY (idAnimal) REFERENCES animal(idAnimal),
     FOREIGN KEY (idPetshopServico) REFERENCES petshop_servico(idPetshopServico)
 );
+
+DROP PROCEDURE IF EXISTS linkPetshopService;
+DELIMITER //
+CREATE PROCEDURE createPetshopService (IN serviceName VARCHAR(256),IN petshopID INT(11),IN  Price INT(11))
+BEGIN
+
+
+	SELECT idServico INTO @has_service FROM servico WHERE Nome = serviceName;
+    
+	IF(@has_service IS NULL) THEN 
+		INSERT INTO servico (Nome) VALUES (serviceName);
+        INSERT INTO petshop_servico  (idPetshop, idServico,Preco) VALUES (petshopID, (SELECT idServico from servico WHERE Nome=serviceName), Price);
+	ELSE 
+		INSERT INTO petshop_servico (idPetshop, idServico, Preco) VALUES (petshopID, @has_service, Price);
+	END IF;
+END//
+DELIMITER ;
+
+DROP FUNCTION IF EXISTS sumServices;
+
+DELIMITER //
+CREATE FUNCTION sumServices(is_concluido INT, animal_id INT) RETURNS DECIMAL(30, 2)
+BEGIN
+    DECLARE sum DECIMAL(30, 2);
+    SELECT IFNULL(Preco, 0.0) INTO sum FROM animal_servico INNER JOIN petshop_servico USING (idPetshopServico) WHERE Concluido=is_concluido and idAnimal = animal_id;
+    RETURN sum;
+END//
+DELIMITER ;
