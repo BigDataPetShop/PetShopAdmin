@@ -75,16 +75,15 @@ router.put('/petshop/servico', function(req, res, next) {
   })
 });
 
-//Transaction ou Stored Procedure
-// router.delete('/petshop/servico', function(req, res, next) {
-//   var del = [req.body.nomePetshop, req.body.nomeServico];
-//   connection.query('DELETE FROM petshop_servico WHERE idPetshop=? and idServico=(SELECT idServico FROM servico WHERE Nome=?)', del, function (err, results, fields) {
-//     if (err) {
-//       res.status(500).send(err);
-//       return console.log(err);
-//     }
-//     res.status(201).send({message: "Servico removido do petshop com sucesso!"});
-//   })
-// });
+router.delete('/petshop/servico', function(req, res, next) {
+  var del = [req.body.idPetshopServico];
+  connection.query('DELETE FROM petshop_servico WHERE idPetshopServico=?', del, function (err, results, fields) {
+    if (err) {
+      res.status(500).send(err);
+      return console.log(err);
+    }
+    res.status(201).send({message: "Servico removido do petshop com sucesso!"});
+  })
+});
 
 module.exports = router;

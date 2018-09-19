@@ -80,7 +80,7 @@ router.put('/animal', function(req, res, next) {
 router.put('/animal/morto', function(req, res, next) {
   var put = req.body.idAnimal;
   
-  connection.query('UPDATE animal SET Vivo=0 WHERE idAnimal = ?', put, function (err, results, fields) {
+  connection.query('UPDATE animal SET Vivo=0 WHERE idAnimal=?', put, function (err, results, fields) {
     if (err) {
       res.status(500).send(err);
       return console.log(err);

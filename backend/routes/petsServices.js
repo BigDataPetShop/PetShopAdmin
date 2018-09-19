@@ -114,17 +114,6 @@ router.post('/animal/servico', function(req, res, next) {
   })
 });
 
-// router.put('/animal/servico', function(req, res, next) {
-//   var put = [req.body.Concluido,req.body.Agenda,req.body.nomePetshop,req.body.nomeServico,req.body.nomeAnimal];
-//   connection.query('UPDATE animal_servico SET Concluido=?, Agenda=? WHERE idPetshopServico=(SELECT idPetshopServico FROM petshop_servico WHERE idPetshop=(SELECT idPetshop WHERE nome=?) and idServico=(SELECT idServico FROM servico WHERE Nome=?)) and idAnimal=(SELECT idAnimal FROM animal WHERE Nome=?)', put, function (err, results, fields) {
-//       if (err) {
-//         res.status(500).send(err);
-//         return console.log(err);
-//       }
-//     res.status(201).send({message: "Servico concluido com sucesso!"})
-//   })
-// });
-
 router.put('/animal/servico/close', function(req, res, next) {
     var put = [req.body.idAnimalServico];
     connection.query('UPDATE animal_servico SET Concluido=1 WHERE idAnimalServico=? ', put, function (err, results, fields) {
@@ -138,13 +127,13 @@ router.put('/animal/servico/close', function(req, res, next) {
 
 //sem testar
 router.delete('/animal/servico', function(req, res, next) {
-  var del = req.body;
-  connection.query('DELETE FROM animal_servico WHERE idPetshopServico=(SELECT idPetshopServico FROM petshop_servico WHERE idPetshop=(SELECT idPetshop FROM petshop WHERE Nome="?") and idServico=(SELECT idServico FROM servico WHERE Nome="?")) and idAnimal=(SELECT idAnimal FROM animal WHERE Nome="?")', del.nomePetshop,del.nomeServico, del.nomeAnimal, function (err, results, fields) {
+  var del = [req.body.idAnimalServico];
+  connection.query('DELETE FROM animal_servico WHERE idAnimalServico=?', del, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         return console.log(err);
       }
-    res.status(201).send({message: "Servico removido do petshop com sucesso!"})
+    res.status(201).send({message: "Servico removido do animal com sucesso!"})
   })
 });
 
