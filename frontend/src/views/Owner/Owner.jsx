@@ -44,7 +44,7 @@ class OwnerPage extends React.Component {
     purchases: [],
     pet: {},
     nextAppointments: [],
-    ownerEmail: "edu.tirta@gmail.com"
+    ownerEmail: "fabioja@insper.edu.br"
   };
 
   componentDidMount() {
