@@ -15,7 +15,7 @@ router.get('/petshop/servico/:idPetshop', function(req, res, next) {
 
 router.get('/petshop/servico/', function(req, res, next) {
   var params = req.params.idPetshop;
-  connection.query('SELECT * FROM petshop_servico', function (err, results, fields) {
+  connection.query('SELECT *, petshop.nome as nomePetshop, servico.Nome as nomeServico FROM petshop_servico INNER JOIN petshop USING (idPetshop) INNER JOIN servico USING (idServico)', function (err, results, fields) {
     if (err) {
       res.status(500).send(err);
       return console.log(err);

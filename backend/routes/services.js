@@ -12,17 +12,7 @@ router.get('/servico', function(req, res, next) {
   })
 });
 
-router.get('/servico/:idServico', function(req, res, next) {
-  var params = req.params.idServico;
-  connection.query('SELECT * FROM servico WHERE idServico = ?', params, function (err, results, fields) {
-      if (err) {
-        res.status(500).send(err);
-        return console.log(err);
-      }
-    res.send(results)
-  })
-});
-
+//o servico ja eh criado ao criar um servico no petshop atravez de trigger
 // router.post('/servico', function(req, res, next) {
 //   var post = Object.keys(req.body).map(function(key) {
 //     return req.body[key];
@@ -48,18 +38,7 @@ router.put('/servico', function(req, res, next) {
   })
 });
 
-router.put('/servico/concluido', function(req, res, next) {
-  var put = req.body.idServico;
-  connection.query('UPDATE servico SET Concluido=1 WHERE idServico = ?', put , function (err, results, fields) {
-      if (err) {
-        res.status(500).send(err);
-        return console.log(err);
-      }
-    res.status(200).send({message: "Servico concluido com sucesso!"})
-  })
-});
 
-//Stored Procedure
 // router.delete('/servico', function(req, res, next) {
 //   var del = req.body;
 //   connection.query('DELETE FROM servico WHERE idServico = del', del, function (err, results, fields) {
