@@ -2,7 +2,7 @@ let API_URL;
 
 process.env.NODE_ENV === "development"
   ? (API_URL = "http://localhost:3000/")
-  : (API_URL = "idk");
+  : (API_URL = "");
 
 export const fetchTypes = () => {
   return fetch(API_URL + "tipo")

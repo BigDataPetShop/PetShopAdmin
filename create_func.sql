@@ -23,9 +23,9 @@ DROP FUNCTION IF EXISTS sumServices;
 DELIMITER //
 CREATE FUNCTION sumServices(is_concluido INT, animal_id INT) RETURNS DECIMAL(30, 2)
 BEGIN
-    DECLARE sum DECIMAL(30, 2);
-    SELECT IFNULL(Preco, 0.0) INTO sum FROM animal_servico INNER JOIN petshop_servico USING (idPetshopServico) WHERE Concluido=is_concluido and idAnimal = animal_id;
-    RETURN sum;
+    DECLARE num DECIMAL(30, 2);
+    SELECT IFNULL(SUM(Preco), 0.0) INTO num FROM animal_servico INNER JOIN petshop_servico USING (idPetshopServico) WHERE Concluido=is_concluido and idAnimal = animal_id group by idAnimal;
+    RETURN num;
 END//
 DELIMITER ;
 

@@ -131,7 +131,7 @@ class Dashboard extends React.Component {
                 <p className={classes.cardCategory}>Renda</p>
                 <h3 className={classes.cardTitle}>
                   R$
-                  {this.state.payments}0
+                  {this.state.payments}
                 </h3>
               </CardHeader>
               <CardFooter stats>

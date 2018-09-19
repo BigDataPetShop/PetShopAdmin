@@ -62,7 +62,7 @@ class OwnerPage extends React.Component {
                   arrayItem.nomeServico,
                   arrayItem.nomePetshop,
                   arrayItem.Endereco,
-                  "R$" + arrayItem.Preco.toString() + "0",
+                  "R$" + arrayItem.Preco.toString(),
                   arrayItem.Agenda
                 ];
                 array.push(subarray);
@@ -179,7 +179,7 @@ class OwnerPage extends React.Component {
                 <p className={classes.cardCategory}>Gasto com serviços</p>
                 <h3 className={classes.cardTitle}>
                   R$
-                  {this.state.totalSpent}0
+                  {this.state.totalSpent}
                 </h3>
               </CardHeader>
               <CardFooter stats>
