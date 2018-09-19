@@ -10,7 +10,6 @@ import Store from "@material-ui/icons/Store";
 import Warning from "@material-ui/icons/Warning";
 import DateRange from "@material-ui/icons/DateRange";
 import Update from "@material-ui/icons/Update";
-import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import AccessTime from "@material-ui/icons/AccessTime";
 import Table from "components/Table/Table.jsx";
 // core components
@@ -27,18 +26,14 @@ import CardFooter from "components/Card/CardFooter.jsx";
 
 import avatar from "assets/img/faces/dog.png";
 
-import {
-  dailySalesChart,
-  emailsSubscriptionChart,
-  completedTasksChart
-} from "variables/charts";
+import { emailsSubscriptionChart } from "variables/charts";
 
 import {
   allClients,
   fetchPendingAnimalServices,
   fetchCompleteAnimalServicesSum,
   fetchCompleteAnimalServices,
-  fetchAnimalByOwnerId
+  fetchAnimalByOwnerEmail
 } from "../../helper.js";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.jsx";
@@ -49,35 +44,39 @@ class OwnerPage extends React.Component {
     purchases: [],
     pet: {},
     nextAppointments: [],
-    ownerRG: 378740064
+    ownerEmail: "edu.tirta@gmail.com"
   };
 
   componentDidMount() {
-    fetchAnimalByOwnerId(this.state.ownerRG)
+    fetchAnimalByOwnerEmail(this.state.ownerEmail)
       .then(response => this.setState({ pet: response[0] }))
       .then(() => {
         allClients().then(response => this.setState({ clients: response.num }));
-        fetchCompleteAnimalServices(this.state.pet.idAnimal).then(response => {
-          var array = [];
-          response.forEach(function(arrayItem) {
-            arrayItem.Agenda = arrayItem.Agenda.substring(0, 10);
-            var subarray = [
-              arrayItem.nomeServico,
-              arrayItem.nomePetshop,
-              arrayItem.Endereco,
-              "R$" + arrayItem.Preco.toString() + "0",
-              arrayItem.Agenda
-            ];
-            array.push(subarray);
-          });
-          this.setState({ purchases: array });
-        });
-        fetchCompleteAnimalServicesSum(this.state.pet.idAnimal).then(response =>
-          this.setState({ totalSpent: response.num })
-        );
-        fetchPendingAnimalServices(4).then(response =>
-          this.setState({ nextAppointments: response })
-        );
+        if (this.state.pet) {
+          fetchCompleteAnimalServices(this.state.pet.idAnimal).then(
+            response => {
+              var array = [];
+              response.forEach(function(arrayItem) {
+                arrayItem.Agenda = arrayItem.Agenda.substring(0, 10);
+                var subarray = [
+                  arrayItem.nomeServico,
+                  arrayItem.nomePetshop,
+                  arrayItem.Endereco,
+                  "R$" + arrayItem.Preco.toString() + "0",
+                  arrayItem.Agenda
+                ];
+                array.push(subarray);
+              });
+              this.setState({ purchases: array });
+            }
+          );
+          fetchCompleteAnimalServicesSum(this.state.pet.idAnimal).then(
+            response => this.setState({ totalSpent: response.num })
+          );
+          fetchPendingAnimalServices(this.state.pet.idAnimal).then(response =>
+            this.setState({ nextAppointments: response })
+          );
+        }
       });
   }
 
@@ -118,48 +117,58 @@ class OwnerPage extends React.Component {
       <div>
         <GridContainer>
           <GridItem xs={12} sm={12} md={4}>
-            <Card profile>
-              <CardAvatar profile>
-                <a href="#pablo" onClick={e => e.preventDefault()}>
-                  <img src={avatar} alt="..." className={classes.avatar} />
-                </a>
-              </CardAvatar>
-              <CardBody profile>
-                <h6 className={classes.cardCategory}>Seu Pet</h6>
-                <h4 className={classes.cardTitle}>{this.state.pet.Nome}</h4>
-                <h4 className={classes.cardTitle}>
-                  Tipo: {this.state.pet.tipoAnimal}
-                </h4>
-                <h4 className={classes.cardTitle}>
-                  Raça: {this.state.pet.racaAnimal}
-                </h4>
-              </CardBody>
-            </Card>
-          </GridItem>
-        </GridContainer>
-        <GridContainer>
-          <GridItem xs={12} sm={12} md={12}>
-            <Card>
-              <CardHeader color="warning" stats icon>
-                <CardIcon color="info">
-                  <Icon>alarm</Icon>
-                </CardIcon>
-                <p className={classes.cardCategory}>Próximos Serviços</p>
-                {this.renderServices()}
-              </CardHeader>
-              <CardFooter stats>
-                <div className={classes.stats}>
-                  <Danger>
-                    <Warning />
-                  </Danger>
+            {this.state.pet ? (
+              <Card profile>
+                <CardAvatar profile>
                   <a href="#pablo" onClick={e => e.preventDefault()}>
-                    Existem serviços pendentes!
+                    <img src={avatar} alt="..." className={classes.avatar} />
                   </a>
-                </div>
-              </CardFooter>
-            </Card>
+                </CardAvatar>
+                <CardBody profile>
+                  <h6 className={classes.cardCategory}>Seu Pet</h6>
+                  <h4 className={classes.cardTitle}>
+                    {this.state.pet ? this.state.pet.Nome : ""}
+                  </h4>
+                  <h4 className={classes.cardTitle}>
+                    Tipo: {this.state.pet ? this.state.pet.tipoAnimal : ""}
+                  </h4>
+                  <h4 className={classes.cardTitle}>
+                    Raça: {this.state.pet ? this.state.pet.racaAnimal : ""}
+                  </h4>
+                </CardBody>
+              </Card>
+            ) : (
+              ""
+            )}
           </GridItem>
         </GridContainer>
+        {this.state.nextAppointments.length > 0 ? (
+          <GridContainer>
+            <GridItem xs={12} sm={12} md={12}>
+              <Card>
+                <CardHeader color="warning" stats icon>
+                  <CardIcon color="info">
+                    <Icon>alarm</Icon>
+                  </CardIcon>
+                  <p className={classes.cardCategory}>Próximos Serviços</p>
+                  {this.renderServices()}
+                </CardHeader>
+                <CardFooter stats>
+                  <div className={classes.stats}>
+                    <Danger>
+                      <Warning />
+                    </Danger>
+                    <a href="#pablo" onClick={e => e.preventDefault()}>
+                      Existem serviços pendentes!
+                    </a>
+                  </div>
+                </CardFooter>
+              </Card>
+            </GridItem>
+          </GridContainer>
+        ) : (
+          ""
+        )}
         <GridContainer>
           <GridItem xs={12} sm={6} md={6}>
             <Card>

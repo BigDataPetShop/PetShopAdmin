@@ -13,12 +13,11 @@ import Update from "@material-ui/icons/Update";
 import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import AccessTime from "@material-ui/icons/AccessTime";
 import Accessibility from "@material-ui/icons/Accessibility";
-import ShoppingCart from "@material-ui/icons/ShoppingCart";
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
-import Tasks from "components/Tasks/Tasks.jsx";
-import CustomTabs from "components/CustomTabs/CustomTabs.jsx";
+import Button from "components/CustomButtons/Button.jsx";
+import Table from "components/Table/Table.jsx";
 import Danger from "components/Typography/Danger.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
@@ -26,27 +25,62 @@ import CardIcon from "components/Card/CardIcon.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 
-import { bugs, website } from "variables/general";
-
 import {
   dailySalesChart,
   emailsSubscriptionChart,
   completedTasksChart
 } from "variables/charts";
 
-import { allClients, allPayments } from "../../helper.js";
+import {
+  allClients,
+  allPayments,
+  fetchTop5,
+  fetchAllPendingAnimalServices,
+  closeServiceByAnimalServiceId
+} from "../../helper.js";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.jsx";
 
 class Dashboard extends React.Component {
   state = {
     payments: 0,
-    clients: 0
+    clients: 0,
+    idPetshop: 1,
+    top5: [],
+    pending: [],
+    allpending: []
   };
 
   componentDidMount() {
     allClients().then(response => this.setState({ clients: response.num }));
     allPayments(1).then(response => this.setState({ payments: response.num }));
+    fetchAllPendingAnimalServices().then(response => {
+      var array = [];
+      let myPetshopId = this.state.idPetshop;
+      response.forEach(function(arrayItem) {
+        if (arrayItem.idPetshop === myPetshopId) {
+          array.push([
+            arrayItem.nomeAnimal,
+            arrayItem.nomeServico,
+            arrayItem.Agenda.substring(0, 10),
+            arrayItem.Preco.toString(),
+            <Button
+              color="primary"
+              onClick={() =>
+                closeServiceByAnimalServiceId(arrayItem.idAnimalServico)
+              }
+              key={arrayItem.idAnimalServico}
+            >
+              Concluir Serviço
+            </Button>
+          ]);
+        }
+      });
+      this.setState({ pending: array, allpending: response });
+    });
+    fetchTop5().then(response => {
+      this.setState({ top5: response });
+    });
   }
 
   handleChange = (event, value) => {
@@ -56,6 +90,11 @@ class Dashboard extends React.Component {
   handleChangeIndex = index => {
     this.setState({ value: index });
   };
+
+  closeService = idAnimalServico => {
+    console.log("eae");
+    
+  }
 
   render() {
     const { classes } = this.props;
@@ -218,34 +257,42 @@ class Dashboard extends React.Component {
         </GridContainer>
         <GridContainer>
           <GridItem xs={12} sm={12} md={12}>
-            <CustomTabs
-              title="Pendências:"
-              headerColor="primary"
-              tabs={[
-                {
-                  tabName: "Serviços",
-                  tabIcon: Store,
-                  tabContent: (
-                    <Tasks
-                      checkedIndexes={[0, 3]}
-                      tasksIndexes={[0, 1, 2, 3]}
-                      tasks={bugs}
-                    />
-                  )
-                },
-                {
-                  tabName: "Produtos Reservados",
-                  tabIcon: ShoppingCart,
-                  tabContent: (
-                    <Tasks
-                      checkedIndexes={[0]}
-                      tasksIndexes={[0, 1]}
-                      tasks={website}
-                    />
-                  )
-                }
-              ]}
-            />
+            <Card>
+              <CardHeader color="primary">
+                <h4 className={classes.cardTitleWhite}>Concluir serviço</h4>
+                <p className={classes.cardCategoryWhite}>
+                  Lista de serviços pendentes para conclusão
+                </p>
+              </CardHeader>
+              <CardBody>
+                <Table
+                  tableHeaderColor="primary"
+                  tableHead={["Nome", "Servico", "Data", "Gasto", "Concluir"]}
+                  tableData={this.state.pending}
+                />
+              </CardBody>
+            </Card>
+          </GridItem>
+        </GridContainer>
+        <GridContainer>
+          <GridItem xs={12} sm={12} md={12}>
+            <Card>
+              <CardHeader color="primary">
+                <h4 className={classes.cardTitleWhite}>
+                  Top 5 animais que mais gastam
+                </h4>
+                <p className={classes.cardCategoryWhite}>
+                  Uma lista dos animais que mais gastam no seu Petshop
+                </p>
+              </CardHeader>
+              <CardBody>
+                <Table
+                  tableHeaderColor="primary"
+                  tableHead={["Nome", "Gasto", "Raca", "Tipo"]}
+                  tableData={this.state.top5}
+                />
+              </CardBody>
+            </Card>
           </GridItem>
         </GridContainer>
       </div>

@@ -1,6 +1,6 @@
 USE petshop;
 
-DROP PROCEDURE IF EXISTS linkPetshopService;
+DROP PROCEDURE IF EXISTS createPetshopService;
 
 DELIMITER //
 CREATE PROCEDURE createPetshopService (IN serviceName VARCHAR(256),IN petshopID INT(11),IN  Price INT(11))

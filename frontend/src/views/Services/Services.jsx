@@ -15,11 +15,11 @@ import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 
 import {
-  fetchTypes,
-  fetchBreeds,
   getOwnerByEmail,
-  submitOwner,
-  submitAnimal
+  fetchAnimalByOwnerEmail,
+  allPetshops,
+  fetchServicesByPetshopId,
+  submitService
 } from "../../helper.js";
 import { Snackbar } from "@material-ui/core";
 
@@ -42,34 +42,45 @@ const styles = {
   }
 };
 
-class UserProfile extends React.Component {
+class Services extends React.Component {
   state = {
-    tipos: [],
-    racas: [],
-    nome: "",
-    sexo: 0,
-    tipo: 0,
-    raca: 0,
-    dataNascimento: "2018-09-19",
+    Agenda: "2018-09-19",
     dono: {
       Nome: "",
-      Email: ""
+      Email: 0
     },
-    nome_dono: "",
+    animal: {
+      idAnimal: 0,
+      Nome: 0
+    },
     email_dono: "",
-    rg_dono: "",
-    estado_dono: 0
+    petshops: [],
+    idPetshop: 0,
+    servicos: [],
+    idPetshopServico: 0,
   };
 
   componentDidMount = () => {
-    fetchTypes().then(response => this.setState({ tipos: response }));
-    fetchBreeds().then(response => this.setState({ racas: response }));
+    allPetshops().then(response => this.setState({ petshops: response }));
+  };
+
+  getServices = idPetshop => {
+    fetchServicesByPetshopId(idPetshop).then(response =>
+      this.setState({ servicos: response })
+    );
+  };
+
+  getAnimal = email => {
+    fetchAnimalByOwnerEmail(email).then(response =>
+      this.setState({ animal: response[0] })
+    );
   };
 
   getOwner = () => {
     getOwnerByEmail(this.state.email_dono).then(response => {
       if (response.RG) {
         this.setState({ dono: response });
+        this.getAnimal(response.Email);
       } else {
         alert("Nenhum dono com esse e-mail");
       }
@@ -77,17 +88,24 @@ class UserProfile extends React.Component {
   };
 
   handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value
-    });
+    if (name === "idPetshop") {
+      this.setState({
+        [name]: event.target.value
+      });
+      this.getServices(event.target.value);
+    } else {
+      this.setState({
+        [name]: event.target.value
+      });
+    }
   };
 
-  renderTypes = () => {
+  renderPetshops = () => {
     var component_array = [];
-    var tipos = this.state.tipos;
-    tipos.forEach(function(arrayItem) {
+    var petshops = this.state.petshops;
+    petshops.forEach(function(arrayItem) {
       component_array.push(
-        <MenuItem value={arrayItem.idTipo} key={arrayItem.idTipo}>
+        <MenuItem value={arrayItem.idPetshop} key={arrayItem.idPetshop}>
           {arrayItem.Nome}
         </MenuItem>
       );
@@ -95,12 +113,12 @@ class UserProfile extends React.Component {
     return component_array;
   };
 
-  renderBreeds = () => {
+  renderServices = () => {
     var component_array = [];
-    var racas = this.state.racas;
-    racas.forEach(function(arrayItem) {
+    var servicos = this.state.servicos;
+    servicos.forEach(function(arrayItem) {
       component_array.push(
-        <MenuItem value={arrayItem.idRaca} key={arrayItem.idRaca}>
+        <MenuItem value={arrayItem.idPetshopServico} key={arrayItem.idServico}>
           {arrayItem.Nome}
         </MenuItem>
       );
@@ -108,32 +126,13 @@ class UserProfile extends React.Component {
     return component_array;
   };
 
-  submitAnimal = () => {
-    var animal = {
-      Nome: this.state.nome,
-      idRaca: this.state.raca,
-      idTipo: this.state.tipo,
-      Sexo: this.state.sexo,
-      dataNascimento: this.state.dataNascimento,
-      Email: this.state.email_dono
+  submitService = () => {
+    var service = {
+      idAnimal: this.state.animal.idAnimal,
+      idPetshopServico: this.state.idPetshopServico,
+      Agenda: this.state.Agenda
     };
-    submitAnimal(animal).then(response => {
-      if (response === "SUCCESS") {
-        alert("Cadastro realizado com sucesso!");
-      } else {
-        alert("Ocorreu um erro. Tente cadastrar novamente.");
-      }
-    });
-  };
-
-  submitOwner = () => {
-    var owner = {
-      Nome: this.state.nome_dono,
-      RG: this.state.rg_dono,
-      UF: this.state.estado_dono,
-      Email: this.state.email_dono
-    };
-    submitOwner(owner).then(response => {
+    submitService(service).then(response => {
       if (response === "SUCCESS") {
         alert("Cadastro realizado com sucesso!");
       } else {
@@ -152,95 +151,9 @@ class UserProfile extends React.Component {
             <GridItem xs={12} sm={12} md={12}>
               <Card>
                 <CardHeader color="primary">
-                  <h4 className={classes.cardTitleWhite}>Dono</h4>
+                  <h4 className={classes.cardTitleWhite}>Serviços</h4>
                   <p className={classes.cardCategoryWhite}>
-                    Cadastre um novo dono
-                  </p>
-                </CardHeader>
-                <CardBody>
-                  <form
-                    className={classes.container}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <GridContainer>
-                      <GridItem xs={12} sm={12} md={6}>
-                        <TextField
-                          id="name"
-                          label="Nome"
-                          className={classes.textField}
-                          value={this.state.nome_dono}
-                          onChange={this.handleChange("nome_dono")}
-                          margin="normal"
-                          fullWidth
-                        />
-                      </GridItem>
-                      <GridItem
-                        xs={12}
-                        sm={12}
-                        md={6}
-                        style={{ marginTop: "32px" }}
-                      >
-                        <Select
-                          value={this.state.estado_dono}
-                          onChange={this.handleChange("estado_dono")}
-                          inputProps={{
-                            label: "estado",
-                            id: "estado"
-                          }}
-                          fullWidth
-                        >
-                          <MenuItem value={0} disabled>
-                            Estado
-                          </MenuItem>
-                          <MenuItem value={"SP"}>SP</MenuItem>
-                          <MenuItem value={"RJ"}>RJ</MenuItem>
-                        </Select>
-                      </GridItem>
-                    </GridContainer>
-                    <GridContainer>
-                      <GridItem xs={12} sm={12} md={6}>
-                        <TextField
-                          id="rg"
-                          label="RG"
-                          className={classes.textField}
-                          value={this.state.rg_dono}
-                          onChange={this.handleChange("rg_dono")}
-                          margin="normal"
-                          fullWidth
-                        />
-                      </GridItem>
-                      <GridItem xs={12} sm={12} md={6}>
-                        <TextField
-                          id="email"
-                          label="E-mail"
-                          className={classes.textField}
-                          value={this.state.email_dono}
-                          onChange={this.handleChange("email_dono")}
-                          margin="normal"
-                          fullWidth
-                        />
-                      </GridItem>
-                    </GridContainer>
-                  </form>
-                </CardBody>
-                <CardFooter>
-                  <Button color="primary" onClick={this.submitOwner}>
-                    Cadastrar
-                  </Button>
-                </CardFooter>
-              </Card>
-            </GridItem>
-          </GridContainer>
-        </div>
-        <div>
-          <GridContainer>
-            <GridItem xs={12} sm={12} md={12}>
-              <Card>
-                <CardHeader color="primary">
-                  <h4 className={classes.cardTitleWhite}>Animal</h4>
-                  <p className={classes.cardCategoryWhite}>
-                    Cadastre um novo animal
+                    Cadastre um serviço para um animal
                   </p>
                 </CardHeader>
                 <CardBody>
@@ -290,17 +203,6 @@ class UserProfile extends React.Component {
                       </GridItem>
                     </GridContainer>
                     <GridContainer>
-                      <GridItem xs={12} sm={12} md={6}>
-                        <TextField
-                          id="name"
-                          label="Nome do Animal"
-                          className={classes.textField}
-                          value={this.state.nome}
-                          onChange={this.handleChange("nome")}
-                          margin="normal"
-                          fullWidth
-                        />
-                      </GridItem>
                       <GridItem
                         xs={12}
                         sm={12}
@@ -308,19 +210,20 @@ class UserProfile extends React.Component {
                         style={{ marginTop: "32px" }}
                       >
                         <Select
-                          value={this.state.sexo}
-                          onChange={this.handleChange("sexo")}
+                          value={this.state.animal.Nome}
                           inputProps={{
-                            label: "sexo",
-                            id: "sexo"
+                            label: "animal",
+                            id: "animal"
                           }}
+                          onChange={this.handleChange("animal")}
                           fullWidth
                         >
                           <MenuItem value={0} disabled>
-                            Sexo do Animal
+                            Nenhum Animal
                           </MenuItem>
-                          <MenuItem value={"Masculino"}>Masculino</MenuItem>
-                          <MenuItem value={"Feminino"}>Feminino</MenuItem>
+                          <MenuItem value={this.state.animal.Nome}>
+                            {this.state.animal.Nome}
+                          </MenuItem>
                         </Select>
                       </GridItem>
                     </GridContainer>
@@ -332,20 +235,22 @@ class UserProfile extends React.Component {
                         style={{ marginTop: "32px" }}
                       >
                         <Select
-                          value={this.state.tipo}
-                          onChange={this.handleChange("tipo")}
+                          value={this.state.idPetshop}
                           inputProps={{
-                            label: "tipo",
-                            id: "tipo"
+                            label: "petshop",
+                            id: "petshop"
                           }}
+                          onChange={this.handleChange("idPetshop")}
                           fullWidth
                         >
                           <MenuItem value={0} disabled>
-                            Tipo do Animal
+                            Nenhum Petshop
                           </MenuItem>
-                          {this.renderTypes()}
+                          {this.renderPetshops()}
                         </Select>
                       </GridItem>
+                    </GridContainer>
+                    <GridContainer>
                       <GridItem
                         xs={12}
                         sm={12}
@@ -353,19 +258,18 @@ class UserProfile extends React.Component {
                         style={{ marginTop: "32px" }}
                       >
                         <Select
-                          value={this.state.raca}
-                          onChange={this.handleChange("raca")}
+                          value={this.state.idPetshopServico}
                           inputProps={{
-                            label: "raca",
-                            id: "raca"
+                            label: "servicos",
+                            id: "servicos"
                           }}
+                          onChange={this.handleChange("idPetshopServico")}
                           fullWidth
-                          disabled={this.state.tipo !== 0 ? false : true}
                         >
                           <MenuItem value={0} disabled>
-                            Raça do Animal
+                            Nenhum Serviço
                           </MenuItem>
-                          {this.renderBreeds()}
+                          {this.renderServices()}
                         </Select>
                       </GridItem>
                     </GridContainer>
@@ -380,7 +284,7 @@ class UserProfile extends React.Component {
                           id="dataNascimento"
                           label="Data de Nascimento"
                           type="date"
-                          value={this.state.dataNascimento}
+                          value={this.state.Agenda}
                           onChange={this.handleChange("dataNascimento")}
                           className={classes.textField}
                           InputLabelProps={{
@@ -393,7 +297,7 @@ class UserProfile extends React.Component {
                   </form>
                 </CardBody>
                 <CardFooter>
-                  <Button color="primary" onClick={this.submitAnimal}>
+                  <Button color="primary" onClick={this.submitService}>
                     Cadastrar
                   </Button>
                 </CardFooter>
@@ -407,4 +311,4 @@ class UserProfile extends React.Component {
   }
 }
 
-export default withStyles(styles)(UserProfile);
+export default withStyles(styles)(Services);

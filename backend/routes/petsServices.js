@@ -13,7 +13,7 @@ router.get('/animal/servico', function(req, res, next) {
 });
 
 router.get('/animal/servico/pending', function(req, res, next) {
-  connection.query('SELECT *, petshop.Nome as nomePetshop, servico.Nome as nomeServico FROM animal_servico INNER JOIN petshop_servico USING (idPetshopServico) INNER JOIN petshop USING (idPetshop) INNER JOIN servico USING (idServico) WHERE Concluido=0', function (err, results, fields) {
+  connection.query('SELECT *, petshop.Nome as nomePetshop, servico.Nome as nomeServico,animal.Nome as nomeAnimal FROM animal_servico INNER JOIN petshop_servico USING (idPetshopServico) INNER JOIN petshop USING (idPetshop) INNER JOIN servico USING (idServico) INNER JOIN animal USING (idAnimal) WHERE Concluido=0', function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         return console.log(err);
@@ -24,7 +24,7 @@ router.get('/animal/servico/pending', function(req, res, next) {
 
 //Temporary Table
 router.get('/animal/servico/top5', function(req, res, next) {
-  connection.query('SELECT * FROM animal_top5', function (err, results, fields) {
+  connection.query('SELECT nomeAnimal, Preco, nomeRaca, nomeTipo FROM animal_top5', function (err, results, fields) {
     if (err) {
       res.status(500).send(err);
       return console.log(err);
@@ -104,8 +104,8 @@ router.get('/animal/servico/sum/petshop/:idPetshop', function(req, res, next) {
 //sem testar
 // Front: busca petshop por nome (seleciona e pega o idPetshop), busca serviços (seleciona e pega o idServiço)
 router.post('/animal/servico', function(req, res, next) {
-  var post = [req.body.idAnimal, req.body.nomePetshop, req.body.nomeServico,req.body.Agenda];
-  connection.query('INSERT INTO animal_servico (idAnimal, idPetshopServico, Concluido, Agenda) VALUES (?, (SELECT idPetshopServico FROM petshop_servico WHERE idPetshop=(SELECT idPetshop from petshop WHERE Nome=?) AND idServico=(SELECT idServico from servico where Nome=?) limit 1),0,?)', post, function (err, results, fields) {
+  var post = [req.body.idAnimal, req.body.idPetshopServico, req.body.Agenda];
+  connection.query('INSERT INTO animal_servico (idAnimal, idPetshopServico, Concluido, Agenda) VALUES (?, ?, 0, ?)', post, function (err, results, fields) {
       if (err) {
         res.status(500).send(err);
         return console.log(err);
@@ -125,7 +125,7 @@ router.put('/animal/servico/close', function(req, res, next) {
     })
   });
 
-//sem testar
+
 router.delete('/animal/servico', function(req, res, next) {
   var del = [req.body.idAnimalServico];
   connection.query('DELETE FROM animal_servico WHERE idAnimalServico=?', del, function (err, results, fields) {

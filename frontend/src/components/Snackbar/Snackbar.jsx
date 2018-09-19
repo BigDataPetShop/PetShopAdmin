@@ -1,69 +1,78 @@
 import React from "react";
-import classNames from "classnames";
 import PropTypes from "prop-types";
-// @material-ui/core components
-import withStyles from "@material-ui/core/styles/withStyles";
-import Snack from "@material-ui/core/Snackbar";
+import { withStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
+import Snackbar from "@material-ui/core/Snackbar";
 import IconButton from "@material-ui/core/IconButton";
-// @material-ui/icons
-import Close from "@material-ui/icons/Close";
-// core components
-import snackbarContentStyle from "assets/jss/material-dashboard-react/components/snackbarContentStyle.jsx";
+import CloseIcon from "@material-ui/icons/Close";
 
-function Snackbar({ ...props }) {
-  const { classes, message, color, close, icon, place, open } = props;
-  var action = [];
-  const messageClasses = classNames({
-    [classes.iconMessage]: icon !== undefined
-  });
-  if (close !== undefined) {
-    action = [
-      <IconButton
-        className={classes.iconButton}
-        key="close"
-        aria-label="Close"
-        color="inherit"
-        onClick={() => props.closeNotification()}
-      >
-        <Close className={classes.close} />
-      </IconButton>
-    ];
+const styles = theme => ({
+  close: {
+    width: theme.spacing.unit * 4,
+    height: theme.spacing.unit * 4
   }
-  return (
-    <Snack
-      anchorOrigin={{
-        vertical: place.indexOf("t") === -1 ? "bottom" : "top",
-        horizontal:
-          place.indexOf("l") !== -1
-            ? "left"
-            : place.indexOf("c") !== -1 ? "center" : "right"
-      }}
-      open={open}
-      message={
-        <div>
-          {icon !== undefined ? <props.icon className={classes.icon} /> : null}
-          <span className={messageClasses}>{message}</span>
-        </div>
-      }
-      action={action}
-      ContentProps={{
-        classes: {
-          root: classes.root + " " + classes[color],
-          message: classes.message
-        }
-      }}
-    />
-  );
+});
+
+class SimpleSnackbar extends React.Component {
+  state = {
+    open: false
+  };
+
+  handleClick = () => {
+    this.setState({ open: true });
+  };
+
+  handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    this.setState({ open: false });
+  };
+
+  render() {
+    const { classes } = this.props;
+    return (
+      <div>
+        <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left"
+          }}
+          open={this.state.open}
+          autoHideDuration={6000}
+          onClose={this.handleClose}
+          ContentProps={{
+            "aria-describedby": "message-id"
+          }}
+          message={<span id="message-id">Note archived</span>}
+          action={[
+            <Button
+              key="undo"
+              color="secondary"
+              size="small"
+              onClick={this.handleClose}
+            >
+              UNDO
+            </Button>,
+            <IconButton
+              key="close"
+              aria-label="Close"
+              color="inherit"
+              className={classes.close}
+              onClick={this.handleClose}
+            >
+              <CloseIcon />
+            </IconButton>
+          ]}
+        />
+      </div>
+    );
+  }
 }
 
-Snackbar.propTypes = {
-  classes: PropTypes.object.isRequired,
-  message: PropTypes.node.isRequired,
-  color: PropTypes.oneOf(["info", "success", "warning", "danger", "primary"]),
-  close: PropTypes.bool,
-  icon: PropTypes.func,
-  place: PropTypes.oneOf(["tl", "tr", "tc", "br", "bl", "bc"]),
-  open: PropTypes.bool
+SimpleSnackbar.propTypes = {
+  classes: PropTypes.object.isRequired
 };
 
-export default withStyles(snackbarContentStyle)(Snackbar);
+export default withStyles(styles)(Snackbar);

@@ -6,7 +6,7 @@ import DashboardPage from "views/Dashboard/Dashboard.jsx";
 import UserProfile from "views/UserProfile/UserProfile.jsx";
 import TableList from "views/TableList/TableList.jsx";
 import Owner from "views/Owner/Owner.jsx";
-import Querys from "views/Querys/Querys.jsx";
+import Services from "views/Services/Services.jsx";
 
 const dashboardRoutes = [
   {
@@ -38,11 +38,11 @@ const dashboardRoutes = [
     component: Owner
   },
   {
-    path: "/querys",
-    sidebarName: "Consultas",
-    navbarName: "Consultas",
+    path: "/services",
+    sidebarName: "Serviços",
+    navbarName: "Serviços",
     icon: "search",
-    component: Querys
+    component: Services
   },
   { redirect: true, path: "/", to: "/dashboard", navbarName: "Redirect" }
 ];

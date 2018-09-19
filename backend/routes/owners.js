@@ -12,7 +12,7 @@ router.get('/dono', function(req, res, next) {
   })
 });
 
-router.get('/dono/:Email', function(req, res, next) {
+router.get('/dono/email/:Email', function(req, res, next) {
   var params = req.params.Email;
   connection.query('SELECT * FROM dono WHERE Email=?', params, function (err, results, fields) {
     if (err) {
@@ -29,7 +29,7 @@ router.get('/dono/:Email', function(req, res, next) {
 });
 
 router.get('/dono/count', function(req, res, next) {
-  connection.query('SELECT COUNT(*) as "num" FROM dono', function (err, results, fields) {
+  connection.query('SELECT COUNT(*) as num FROM dono', function (err, results, fields) {
     if (err) {
       res.status(500).send(err);
       return console.log(err)
